@@ -1,1 +1,118 @@
-version: "3"
+version: "3.1"
+services:
+  openresty:
+    image: openresty/openresty:1.21.4.1-7-alpine-fat
+    container_name: dev_openresty
+    ports:
+      - "800:80"
+      - "4430:443"
+      - "38000-38010:18000-18010"
+    volumes:
+      - ./web:/www
+      - ./app/openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./app/openresty/conf.d:/etc/nginx/conf.d
+      - ./log/openresty:/usr/local/openresty/nginx/logs
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+    restart: unless-stopped
+    networks:
+      - default
+  php74:
+    image: eleven9809/php74:1.3
+    container_name: dev_php74
+    expose:
+      - 9000
+    volumes:
+      - ./web:/www
+      - ./app/php/74/etc:/usr/local/etc
+      - ./log/php/74:/var/log/php7
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    networks:
+      - default
+  mysql80:
+    image: mysql:8.0
+    privileged: true
+    container_name: dev_mysql80
+    restart: unless-stopped
+    volumes:
+      - ./data/mysql/80:/var/lib/mysql
+      - ./app/mysql/80/conf.d:/etc/mysql/conf.d
+      - ./app/mysql/80/my.cnf:/etc/my.cnf
+      - ./log/mysql/80:/logs
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    environment:
+        MYSQL_ROOT_PASSWORD: awX5pgjY1Lmgyo6X
+        MYSQL_USER: docker
+        MYSQL_PASSWORD: awX5pgjY1Lmgyo6X
+        MYSQL_INITDB_SKIP_TZINFO: Asia/Shanghai
+    ports:
+        - "33065:3306"
+    networks:
+      - default
+  redis62:
+    image: redis/redis-stack-server:6.2.6-v7
+    container_name: dev_redis62
+    ports:
+      - "6378:6379"
+    volumes:
+      - ./app/redis/conf/redis.conf:/redis-stack.conf
+      - ./app/redis/entrypoint.sh:/entrypoint.sh
+      - ./data/redis:/data
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+    restart: unless-stopped
+    entrypoint: [ "bash", "entrypoint.sh" ]
+    environment:
+      - REDIS_ARGS=--requirepass 123456!
+    networks:
+      - default
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: dev_rabbitmq
+    # 授权 administrator
+    # rabbitmqctl set_user_tags ${USER} administrator
+    environment:
+      - TZ=Asia/Shanghai
+      - RABBITMQ_DEFAULT_USER=docker
+      - RABBITMQ_DEFAULT_PASS=dockerrabbitmq
+    # Web 管理页面端口: 15672
+    # 开启: rabbitmq-plugins enable rabbitmq_management
+    ports:
+      - "5674:5672"
+      - "15674:15672"
+    volumes:
+      - ./app/rabbitmq/conf.d:/etc/rabbitmq/conf.d
+      - ./app/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - ./data/rabbitmq:/var/lib/rabbitmq
+      - ./log/rabbitmq:/var/log/rabbitmq
+    restart: unless-stopped
+  mongo:
+    image: mongo:latest
+    container_name: dev_mongo
+    volumes:
+      - ./data/mongo:/data/db
+      - ./app/mongo/conf/mongod.conf:/etc/mongod.conf
+    command:
+      --config /etc/mongod.conf
+    ports:
+      - "27018:27017"
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=docker
+      - MONGO_INITDB_ROOT_PASSWORD=dockermongo
+    networks:
+      - default
+networks:
+  default:
+    driver: bridge
