@@ -1,50 +1,49 @@
 version: "3.1"
 services:
   openresty:
-    image: openresty/openresty:1.21.4.1-7-alpine-fat
-    container_name: dev_openresty
+    image: ${OPENRESTY_IMAGE}
+    container_name: ${OPENRESTY_CONTAINER_NAME}
     ports:
-      - "800:80"
-      - "4430:443"
-      - "38000-38010:18000-18010"
+      - ${OPENRESTY_PORT1}
+      - ${OPENRESTY_PORT2}
+      - ${OPENRESTY_PORT_SEGMENT}
     volumes:
-      - ./web:/www
+      - ${WEB_PATH}:/www
       - ./app/openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
       - ./app/openresty/conf.d:/etc/nginx/conf.d
       - ./log/openresty:/usr/local/openresty/nginx/logs
-      - /etc/localtime:/etc/localtime
-      - /etc/timezone:/etc/timezone
+      - ${LOCALTIME_VOLUMES}
+      - ${TIMEZONE_VOLUMES}
     restart: unless-stopped
-    networks:
-      - default
+    network_mode: "host"
   php74:
-    image: eleven9809/php74:1.3
-    container_name: dev_php74
+    image: ${PHP74_IMAGE}
+    container_name: ${PHP74_CONTAINER_NAME}
     expose:
-      - 9000
+      - ${PHP74_EXPOSE}
     volumes:
-      - ./web:/www
+      - ${WEB_PATH}:/www
       - ./app/php/74/etc:/usr/local/etc
       - ./log/php/74:/var/log/php7
-      - /etc/localtime:/etc/localtime
-      - /etc/timezone:/etc/timezone
+      - ${LOCALTIME_VOLUMES}
+      - ${TIMEZONE_VOLUMES}
     restart: unless-stopped
     cap_add:
       - SYS_PTRACE
     networks:
       - default
   mysql80:
-    image: mysql:8.0
+    image: ${MYSQL80_IMAGE}
     privileged: true
-    container_name: dev_mysql80
+    container_name: ${MYSQL80_CONTAINER_NAME}
     restart: unless-stopped
     volumes:
       - ./data/mysql/80:/var/lib/mysql
       - ./app/mysql/80/conf.d:/etc/mysql/conf.d
       - ./app/mysql/80/my.cnf:/etc/my.cnf
       - ./log/mysql/80:/logs
-      - /etc/localtime:/etc/localtime
-      - /etc/timezone:/etc/timezone
+      - ${LOCALTIME_VOLUMES}
+      - ${TIMEZONE_VOLUMES}
     command:
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
@@ -57,20 +56,20 @@ services:
         MYSQL_PASSWORD: awX5pgjY1Lmgyo6X
         MYSQL_INITDB_SKIP_TZINFO: Asia/Shanghai
     ports:
-        - "33065:3306"
+        - ${MYSQL80_PORT}
     networks:
       - default
   redis62:
-    image: redis/redis-stack-server:6.2.6-v7
-    container_name: dev_redis62
+    image: ${REDIS62_IMAGE}
+    container_name: ${REDIS62_CONTAINER_NAME}
     ports:
-      - "6378:6379"
+      - ${REDIS62_PORT}
     volumes:
       - ./app/redis/conf/redis.conf:/redis-stack.conf
       - ./app/redis/entrypoint.sh:/entrypoint.sh
       - ./data/redis:/data
-      - /etc/localtime:/etc/localtime
-      - /etc/timezone:/etc/timezone
+      - ${LOCALTIME_VOLUMES}
+      - ${TIMEZONE_VOLUMES}
     restart: unless-stopped
     entrypoint: [ "bash", "entrypoint.sh" ]
     environment:
@@ -78,8 +77,8 @@ services:
     networks:
       - default
   rabbitmq:
-    image: rabbitmq:3.12-management
-    container_name: dev_rabbitmq
+    image: ${RABBITMQ_IMAGE}
+    container_name: ${RABBITMQ_CONTAINER_NAME}
     # 授权 administrator
     # rabbitmqctl set_user_tags ${USER} administrator
     environment:
@@ -89,8 +88,8 @@ services:
     # Web 管理页面端口: 15672
     # 开启: rabbitmq-plugins enable rabbitmq_management
     ports:
-      - "5674:5672"
-      - "15674:15672"
+      - ${RABBITMQ_PORT1}
+      - ${RABBITMQ_PORT2}
     volumes:
       - ./app/rabbitmq/conf.d:/etc/rabbitmq/conf.d
       - ./app/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
@@ -98,21 +97,36 @@ services:
       - ./log/rabbitmq:/var/log/rabbitmq
     restart: unless-stopped
   mongo:
-    image: mongo:latest
-    container_name: dev_mongo
+    image: ${MONGO_IMAGE}
+    container_name: ${MONGO_CONTAINER_NAME}
     volumes:
       - ./data/mongo:/data/db
       - ./app/mongo/conf/mongod.conf:/etc/mongod.conf
     command:
       --config /etc/mongod.conf
     ports:
-      - "27018:27017"
+      - ${MONGO_PORT}
     restart: unless-stopped
     environment:
       - MONGO_INITDB_ROOT_USERNAME=docker
       - MONGO_INITDB_ROOT_PASSWORD=dockermongo
     networks:
       - default
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ${LOCALTIME_VOLUMES}
+      - ${TIMEZONE_VOLUMES}
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer:/data
+    ports:
+      - "9001:9000"
+    networks:
+      - default
 networks:
   default:
-    driver: bridge
+    driver: host
