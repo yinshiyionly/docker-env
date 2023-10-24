@@ -1,0 +1,23 @@
+# Ignore the nohup.out
+nohup.out
+
+# Ignore the idea settings
+.idea
+
+# Ignore the DS_Store for macOs
+.DS_Store
+
+# Customize .env
+.env
+
+# Ignore the Web directory, but retain the Demo subdirectory
+web
+!web/demo
+
+# Ignore the Data directory, but retain the README.md
+data
+!data/README.md
+
+# Ignore the Log directory, but retain the README.md
+log
+!log/README.md
