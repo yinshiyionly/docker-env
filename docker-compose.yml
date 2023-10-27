@@ -73,7 +73,7 @@ services:
     restart: unless-stopped
     entrypoint: [ "bash", "entrypoint.sh" ]
     environment:
-      - REDIS_ARGS=--requirepass 123456!
+      - REDIS_ARGS=--requirepass ${REDIS62_PASSWORD}
     networks:
       - default
   rabbitmq:
