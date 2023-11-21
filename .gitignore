@@ -1,8 +1,9 @@
 # Ignore the nohup.out
 nohup.out
 
-# Ignore the idea settings
+# Ignore the editor settings
 .idea
+.vscode
 
 # Ignore the DS_Store for macOs
 .DS_Store
