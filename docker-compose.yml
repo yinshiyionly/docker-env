@@ -4,8 +4,6 @@ services:
     image: ${OPENRESTY_IMAGE}
     container_name: ${CONTAINER_PREFIX}${OPENRESTY_CONTAINER_NAME}
     ports:
-      - ${OPENRESTY_PORT1}
-      - ${OPENRESTY_PORT2}
       - ${OPENRESTY_PORT_SEGMENT}
     volumes:
       - ${WEB_PATH}:/www
@@ -15,7 +13,6 @@ services:
       - ${LOCALTIME_VOLUMES}
       - ${TIMEZONE_VOLUMES}
     restart: unless-stopped
-    network_mode: "host"
   php74:
     image: ${PHP74_IMAGE}
     container_name: ${CONTAINER_PREFIX}${PHP74_CONTAINER_NAME}
@@ -73,7 +70,7 @@ services:
     restart: unless-stopped
     entrypoint: [ "bash", "entrypoint.sh" ]
     environment:
-      - REDIS_ARGS=--requirepass 123456!
+      - REDIS_ARGS=--requirepass ${REDIS62_PASSWORD}
     networks:
       - default
   rabbitmq:
@@ -112,21 +109,21 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=dockermongo
     networks:
       - default
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: ${CONTAINER_PREFIX}portainer
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    volumes:
-      - ${LOCALTIME_VOLUMES}
-      - ${TIMEZONE_VOLUMES}
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./data/portainer:/data
-    ports:
-      - "9001:9000"
-    networks:
-      - default
+#  portainer:
+#    image: portainer/portainer-ce:latest
+#    container_name: ${CONTAINER_PREFIX}portainer
+#    restart: unless-stopped
+#    security_opt:
+#      - no-new-privileges:true
+#    volumes:
+#      - ${LOCALTIME_VOLUMES}
+#      - ${TIMEZONE_VOLUMES}
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - ./data/portainer:/data
+#    ports:
+#      - "9001:9000"
+#    networks:
+#      - default
 networks:
   default:
     driver: host
