@@ -2,7 +2,7 @@ version: "3.1"
 services:
   openresty:
     image: ${OPENRESTY_IMAGE}
-    container_name: ${OPENRESTY_CONTAINER_NAME}
+    container_name: ${CONTAINER_PREFIX}${OPENRESTY_CONTAINER_NAME}
     ports:
       - ${OPENRESTY_PORT1}
       - ${OPENRESTY_PORT2}
@@ -18,7 +18,7 @@ services:
     network_mode: "host"
   php74:
     image: ${PHP74_IMAGE}
-    container_name: ${PHP74_CONTAINER_NAME}
+    container_name: ${CONTAINER_PREFIX}${PHP74_CONTAINER_NAME}
     expose:
       - ${PHP74_EXPOSE}
     volumes:
@@ -35,7 +35,7 @@ services:
   mysql80:
     image: ${MYSQL80_IMAGE}
     privileged: true
-    container_name: ${MYSQL80_CONTAINER_NAME}
+    container_name: ${CONTAINER_PREFIX}${MYSQL80_CONTAINER_NAME}
     restart: unless-stopped
     volumes:
       - ./data/mysql/80:/var/lib/mysql
@@ -61,7 +61,7 @@ services:
       - default
   redis62:
     image: ${REDIS62_IMAGE}
-    container_name: ${REDIS62_CONTAINER_NAME}
+    container_name: ${CONTAINER_PREFIX}${REDIS62_CONTAINER_NAME}
     ports:
       - ${REDIS62_PORT}
     volumes:
@@ -78,7 +78,7 @@ services:
       - default
   rabbitmq:
     image: ${RABBITMQ_IMAGE}
-    container_name: ${RABBITMQ_CONTAINER_NAME}
+    container_name: ${CONTAINER_PREFIX}${RABBITMQ_CONTAINER_NAME}
     # 授权 administrator
     # rabbitmqctl set_user_tags ${USER} administrator
     environment:
@@ -98,7 +98,7 @@ services:
     restart: unless-stopped
   mongo:
     image: ${MONGO_IMAGE}
-    container_name: ${MONGO_CONTAINER_NAME}
+    container_name: ${CONTAINER_PREFIX}${MONGO_CONTAINER_NAME}
     volumes:
       - ./data/mongo:/data/db
       - ./app/mongo/conf/mongod.conf:/etc/mongod.conf
@@ -114,7 +114,7 @@ services:
       - default
   portainer:
     image: portainer/portainer-ce:latest
-    container_name: portainer
+    container_name: ${CONTAINER_PREFIX}portainer
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
