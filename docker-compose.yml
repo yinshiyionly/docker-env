@@ -10,9 +10,12 @@ services:
       - ./app/openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
       - ./app/openresty/conf.d:/etc/nginx/conf.d
       - ./log/openresty:/usr/local/openresty/nginx/logs
+      - ${WELCOME_PATH}
       - ${LOCALTIME_VOLUMES}
       - ${TIMEZONE_VOLUMES}
     restart: unless-stopped
+    networks:
+      - default
   php74:
     image: ${PHP74_IMAGE}
     container_name: ${CONTAINER_PREFIX}${PHP74_CONTAINER_NAME}
@@ -93,6 +96,8 @@ services:
       - ./data/rabbitmq:/var/lib/rabbitmq
       - ./log/rabbitmq:/var/log/rabbitmq
     restart: unless-stopped
+    networks:
+      - default
   mongo:
     image: ${MONGO_IMAGE}
     container_name: ${CONTAINER_PREFIX}${MONGO_CONTAINER_NAME}
@@ -126,4 +131,4 @@ services:
 #      - default
 networks:
   default:
-    driver: host
+    driver: bridge
