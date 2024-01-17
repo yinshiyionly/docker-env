@@ -32,6 +32,22 @@ services:
       - SYS_PTRACE
     networks:
       - default
+  php82:
+    image: php:8.2.14-fpm
+    container_name: ${CONTAINER_PREFIX}php82
+    expose:
+      - 9000
+    volumes:
+      - ${WEB_PATH}:/www
+      # - ./app/php/74/etc:/usr/local/etc
+      # - ./log/php/74:/var/log/php7
+      - ${LOCALTIME_VOLUMES}
+      - ${TIMEZONE_VOLUMES}
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    networks:
+      - default    
   mysql80:
     image: ${MYSQL80_IMAGE}
     privileged: true
