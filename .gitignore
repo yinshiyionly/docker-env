@@ -13,7 +13,7 @@ nohup.out
 
 # Ignore the Web directory, but retain the Demo subdirectory
 web
-!web/demo
+!web/welcome
 
 # Ignore the Data directory, but retain the README.md
 data
