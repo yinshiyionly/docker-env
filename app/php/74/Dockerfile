@@ -29,6 +29,7 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
         zip \
         pgsql \
         pdo_pgsql \
+    && mkdir -p /usr/src/php/ext \
     && cd /usr/src/php/ext \
     && curl -o swoole.tgz https://pecl.php.net/get/swoole-4.8.6.tgz \
     && tar -zxvf swoole.tgz \
