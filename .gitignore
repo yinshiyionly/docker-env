@@ -22,3 +22,6 @@ data
 # Ignore the Log directory, but retain the README.md
 log
 !log/README.md
+
+# Ignore install-docker.sh
+install-docker.sh
