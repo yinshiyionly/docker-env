@@ -38,7 +38,9 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
     && cat /usr/share/zoneinfo/Asia/Shanghai  > /etc/localtime \
     && echo 'Asia/Shanghai' > /etc/timezone \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -o /usr/bin/composer https://mirrors.aliyun.com/composer/composer.phar \
+    && chmod +x /usr/bin/composer
 
 EXPOSE 9000
 
