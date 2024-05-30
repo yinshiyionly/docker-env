@@ -26,14 +26,14 @@ $ sudo sh install-docker.sh
 
 # Command-line options
 
-1. `--version` <VERSION>
+1. `--version` <VERSION>  
 Use the `--version` option to install a specific version, for example:
 
 ```shell
 $ sudo sh install-docker.sh --version 23.0
 ```
 
-2. `--channel` <stable|test>
+2. `--channel` <stable|test>  
 Use the --channel option to install from an alternative installation channel.
 for example:
 
