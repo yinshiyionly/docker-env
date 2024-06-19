@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'app/php/74/Dockerfile'
-      - '.github/workflows/docker-image.yml'
+      - '.github/workflows/docker-image-php74.yml'
 
 jobs:
   build:
