@@ -1,7 +1,7 @@
 FROM php:8.2.20-fpm
 
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
-    && apt update \
+# RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
+RUN apt update \
     && apt install -y \
         procps \
         librabbitmq-dev \
