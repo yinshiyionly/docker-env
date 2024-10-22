@@ -14,7 +14,7 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
         libzip-dev \
         libpq-dev \
         supervisor \
-    && pecl install amqp igbinary imagick redis \
+    && pecl install amqp igbinary imagick redis xlswriter \
     && docker-php-ext-enable amqp igbinary imagick redis \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
