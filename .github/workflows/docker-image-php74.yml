@@ -1,5 +1,5 @@
 # workfolow 名称
-name: Docker Image CI
+name: php74 build image and push
 # 触发条件 
 on:
   # github 页面手动触发
@@ -27,7 +27,7 @@ jobs:
     steps:
       # 拉取代码，同时获取 tag，如果获取不到则默认值为 edge，并复制给 v 变量
       - name: Checkout tags
-        users: actions/checkout@v3
+        uses: actions/checkout@v3
       - id: output-id
         run: |
           VERSION=edge
