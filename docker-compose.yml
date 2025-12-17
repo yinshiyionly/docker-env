@@ -1,4 +1,3 @@
-version: "3.1"
 services:
   openresty:
     image: ${OPENRESTY_IMAGE}
@@ -16,6 +15,16 @@ services:
     restart: unless-stopped
     networks:
       - default
+  open-node:
+    image: ${OPENRESTY_IMAGE}
+    container_name: open-node
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web/open-node:/www
+      - ./app/open-node/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./app/open-node/conf.d:/etc/nginx/conf.d
+      - ./log/open-node:/usr/local/openresty/nginx/logs
   php74:
     image: ${PHP74_IMAGE}
     container_name: ${CONTAINER_PREFIX}${PHP74_CONTAINER_NAME}
@@ -33,13 +42,13 @@ services:
     networks:
       - default
   php82:
-    image: php:8.2.14-fpm
+    image: ${PHP82_IMAGE}
     container_name: ${CONTAINER_PREFIX}php82
     expose:
-      - 9000
+      - 9001
     volumes:
       - ${WEB_PATH}:/www
-      # - ./app/php/74/etc:/usr/local/etc
+      - ./app/php/82/etc:/usr/local/etc
       # - ./log/php/74:/var/log/php7
       - ${LOCALTIME_VOLUMES}
       - ${TIMEZONE_VOLUMES}
