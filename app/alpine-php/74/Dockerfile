@@ -40,11 +40,9 @@ RUN apk add --no-cache \
     libpq \
     rabbitmq-c \
     imagemagick \
-    # 时区支持
     tzdata
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
-    # 设置 PHP 的默认时区
     && printf "[Date]\ndate.timezone = Asia/Shanghai\n" > /usr/local/etc/php/conf.d/timezone.ini
 
 # (可选) 设置环境变量，某些程序会读取此变量
