@@ -43,7 +43,7 @@ RUN apk add --no-cache \
     # 时区支持
     tzdata
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && eacho "Asia/Shanghai" > /etc/timezone \
+    && echo "Asia/Shanghai" > /etc/timezone \
     # 设置 PHP 的默认时区
     && printf "[Date]\ndate.timezone = Asia/Shanghai\n" > /usr/local/etc/php/conf.d/timezone.ini
 
