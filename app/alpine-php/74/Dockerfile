@@ -40,7 +40,7 @@ RUN apk add --no-cache \
     libpq \
     rabbitmq-c \
     imagemagick \
-    tzdata
+    tzdata \
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
     && printf "[Date]\ndate.timezone = Asia/Shanghai\n" > /usr/local/etc/php/conf.d/timezone.ini
