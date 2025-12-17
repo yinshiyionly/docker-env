@@ -1,0 +1,18 @@
+services:
+  php-fpm:
+    image: eleven9809/alpine-php74:v0.1
+    container_name: my-php-container
+    restart: always
+    ports:
+      - "19000:9000"
+    volumes:
+      # 挂载你的项目代码
+      - ./src:/www
+      # 如果你想在不重新打镜像的情况下修改 supervisor 配置，可以取消下面注释
+      # - ./supervisord.conf:/etc/supervisord.conf
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
